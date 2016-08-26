@@ -334,7 +334,7 @@ public class Configuration {
         args.add("--default.discovery.zen.fd.ping_interval=1s");
         args.add("--default.discovery.zen.fd.ping_retries=30");
         args.add("--default.discovery.zen.ping.multicast.enabled=false");
-
+        args.add("--default.discovery.zen.minimum_master_nodes=" + getElasticsearchNodes());
 
         return args;
     }
