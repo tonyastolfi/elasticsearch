@@ -39,7 +39,10 @@ public class OfferStrategy {
                 // TODO (PNW): Better get HTTP address method. We do this everywhere.
                 InetSocketAddress clientAddress = taskList.get(clusterState.getTaskList().get(0).getTaskId().getValue()).getClientAddress();
                 String hostAddress = NetworkUtils.addressToString(clientAddress, configuration.getIsUseIpAddress());
-                return Unirest.get(hostAddress).asString().getStatus() == 200;
+                final int hostHttpStatus = Unirest.get(hostAddress).asString().getStatus();
+                // If the quorum requirement is set higher than the number of nodes running,
+                // we will get back a 503.
+                return hostHttpStatus == 200 || hostHttpStatus == 503;
             } catch (UnirestException e) {
                 return false;
             }
