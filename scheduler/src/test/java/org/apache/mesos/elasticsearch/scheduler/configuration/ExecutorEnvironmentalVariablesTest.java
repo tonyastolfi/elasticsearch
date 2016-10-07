@@ -20,7 +20,9 @@ public class ExecutorEnvironmentalVariablesTest {
     @Test
     public void ensureOver1GBHeapIs256MB() throws Exception {
         int ram = 2048;
+        int heap = -1;
         Mockito.when(configuration.getMem()).thenReturn((double) ram);
+        Mockito.when(configuration.getHeap()).thenReturn((double) heap);
         ExecutorEnvironmentalVariables env = new ExecutorEnvironmentalVariables(configuration);
 
         for (Protos.Environment.Variable var : env.getList()) {
@@ -37,7 +39,9 @@ public class ExecutorEnvironmentalVariablesTest {
     @Test
     public void ensureUnder1GBIsLessThan256MB() throws Exception {
         int ram = 512;
+        int heap = -1;
         Mockito.when(configuration.getMem()).thenReturn((double) ram);
+        Mockito.when(configuration.getHeap()).thenReturn((double) heap);
         ExecutorEnvironmentalVariables env = new ExecutorEnvironmentalVariables(configuration);
 
         for (Protos.Environment.Variable var : env.getList()) {
@@ -50,6 +54,25 @@ public class ExecutorEnvironmentalVariablesTest {
                 assertTrue(ram - Integer.parseInt(matcher.group(1)) < 256);
                 assertTrue(ram - Integer.parseInt(matcher.group(1)) < ram);
                 assertTrue(ram - Integer.parseInt(matcher.group(1)) > 0);
+            }
+        }
+    }
+
+    @Test
+    public void ensureHeapReturnedIfSpecified() throws Exception {
+        int ram = 512;
+        int heap = 384;
+        Mockito.when(configuration.getMem()).thenReturn((double) ram);
+        Mockito.when(configuration.getHeap()).thenReturn((double) heap);
+        ExecutorEnvironmentalVariables env = new ExecutorEnvironmentalVariables(configuration);
+
+        for (Protos.Environment.Variable var : env.getList()) {
+            if (var.getName().equals(ExecutorEnvironmentalVariables.ES_HEAP)) {
+                String val = var.getValue();
+                Pattern pattern = Pattern.compile("(\\d*)m");
+                Matcher matcher = pattern.matcher(val);
+                assertTrue(matcher.matches());
+                assertEquals(Integer.toString(heap), matcher.group(1));
             }
         }
     }

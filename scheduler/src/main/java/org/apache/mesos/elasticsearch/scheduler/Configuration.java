@@ -31,6 +31,7 @@ public class Configuration {
     // **** ELASTICSEARCH
     public static final String ELASTICSEARCH_CPU = "--elasticsearchCpu";
     public static final String ELASTICSEARCH_RAM = "--elasticsearchRam";
+    public static final String ELASTICSEARCH_HEAP = "--elasticsearchHeap";
     public static final String ELASTICSEARCH_DISK = "--elasticsearchDisk";
     // **** WEB UI
     public static final String WEB_UI_PORT = "--webUiPort";
@@ -71,7 +72,9 @@ public class Configuration {
     @Parameter(names = {ELASTICSEARCH_CPU}, description = "The amount of CPU resource to allocate to the elasticsearch instance.", validateValueWith = CLIValidators.PositiveDouble.class)
     private double cpus = 1.0;
     @Parameter(names = {ELASTICSEARCH_RAM}, description = "The amount of ram resource to allocate to the elasticsearch instance (MB).", validateValueWith = CLIValidators.PositiveDouble.class)
-    private double mem = 256;
+    private double mem = 512;
+    @Parameter(names = {ELASTICSEARCH_HEAP}, description = "The amount of heap to allocate to the ES JVM (MB). Advised to be at least 256 MB lower than the RAM setting.")
+    private double heap = -1;
     @Parameter(names = {ELASTICSEARCH_DISK}, description = "The amount of Disk resource to allocate to the elasticsearch instance (MB).", validateValueWith = CLIValidators.PositiveDouble.class)
     private double disk = 1024;
     @Parameter(names = {WEB_UI_PORT}, description = "TCP port for web ui interface.", validateValueWith = CLIValidators.PositiveInteger.class)
@@ -138,6 +141,10 @@ public class Configuration {
 
     public double getMem() {
         return mem;
+    }
+
+    public double getHeap() {
+        return heap;
     }
 
     public double getDisk() {

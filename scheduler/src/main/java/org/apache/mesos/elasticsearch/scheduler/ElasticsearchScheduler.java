@@ -49,7 +49,8 @@ public class ElasticsearchScheduler implements Scheduler {
     public void run(SchedulerDriver schedulerDriver) {
         LOGGER.info("Starting ElasticSearch on Mesos - [numHwNodes: " + configuration.getElasticsearchNodes() +
                 ", zk mesos: " + configuration.getMesosZKURL() +
-                ", ram:" + configuration.getMem() + "]");
+                ", ram:" + configuration.getMem() +
+                ", heap:" + configuration.getHeap() + "]");
 
         LOGGER.debug("Starting task reaper");
         taskReaper = new TaskReaper(schedulerDriver, configuration, clusterState);
