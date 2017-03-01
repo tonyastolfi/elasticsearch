@@ -101,25 +101,27 @@ public class TaskInfoFactory {
         Protos.ContainerInfo containerInfo = getContainer(configuration, taskId, elasticSearchNodeId, offer.getSlaveId());
 
         final String TAMR_ES_EXTRA_DOCKER_PARAMS = System.getenv("TAMR_ES_EXTRA_DOCKER_PARAMS");
-        final String delimiter = TAMR_ES_EXTRA_DOCKER_PARAMS.substring(0, 1);
-        String key = null;
-        for (final String s : TAMR_ES_EXTRA_DOCKER_PARAMS.substring(1).split(delimiter)) {
-          if (key == null) {
-            key = s;
-            continue;
-          }
-          final String value = s;
-          containerInfo = containerInfo.toBuilder()
-            .setDocker(
-              containerInfo.getDocker().toBuilder()
-                .addParameters(
-                  Protos.Parameter.newBuilder()
-                    .setKey(key)
-                    .setValue(value)
-                    .build()
-                ).build()
-            ).build();
-          key = null;
+        if (TAMR_ES_EXTRA_DOCKER_PARAMS != null && TAMR_ES_EXTRA_DOCKER_PARAMS.length() > 1) {
+            final String delimiter = TAMR_ES_EXTRA_DOCKER_PARAMS.substring(0, 1);
+            String key = null;
+            for (final String s : TAMR_ES_EXTRA_DOCKER_PARAMS.substring(1).split(delimiter)) {
+                if (key == null) {
+                    key = s;
+                    continue;
+                }
+                final String value = s;
+                containerInfo = containerInfo.toBuilder()
+                  .setDocker(
+                    containerInfo.getDocker().toBuilder()
+                      .addParameters(
+                        Protos.Parameter.newBuilder()
+                          .setKey(key)
+                          .setValue(value)
+                          .build()
+                      ).build()
+                  ).build();
+                key = null;
+            }
         }
 
         return Protos.TaskInfo.newBuilder()
