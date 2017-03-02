@@ -19,6 +19,7 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -330,7 +331,8 @@ public class Configuration {
         } else {
             args.add("--path.data=" + CONTAINER_PATH_DATA); // Cannot be overidden
         }
-        args.add("--default.bootstrap.mlockall=true");
+        args.add("--default.bootstrap.mlockall=" +
+          Optional.ofNullable(System.getenv("TAMR_ES_BOOTSTRAP_MLOCKALL")).orElse("false"));
         args.add("--default.network.bind_host=0.0.0.0");
         args.add("--default.network.publish_host=_non_loopback:ipv4_");
         args.add("--default.gateway.recover_after_nodes=1");
