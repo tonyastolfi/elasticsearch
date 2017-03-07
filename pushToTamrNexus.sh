@@ -17,6 +17,18 @@ function pushjar {
     find ~/.gradle -name '*.jar' | grep $(basename $1) | xargs -t -n 1 rm -rf
 }
 
+version_parts="[^0-9]*\([0-9]\)\.\([0-9]\)\.\([0-9]\).*"
+maven_version=$(bash -c "$(
+  mvn -v 2>&1 |
+  grep 'Apache Maven' |
+  sed -e "s,$version_parts,expr \1 \\\* 10000 \+ \2 \\\* 100 \+ \3,g"
+)")
+
+if [ $maven_version -lt 30309 ]; then
+    echo 'Please upgrade Maven to version 3.3.9 or newer.'
+    exit 1
+fi
+
 basedir=$(cd $(dirname $0) && pwd)
 version=0.5
 $basedir/gradlew build :scheduler:copyJar -x test
