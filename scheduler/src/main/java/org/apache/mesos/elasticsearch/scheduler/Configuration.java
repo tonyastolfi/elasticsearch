@@ -345,6 +345,12 @@ public class Configuration {
         args.add("--default.discovery.zen.ping.multicast.enabled=false");
         args.add("--default.discovery.zen.minimum_master_nodes=" + getElasticsearchNodes());
 
+        final String TAMR_ES_EXTRA_CLI_ARGS = System.getenv("TAMR_ES_EXTRA_CLI_ARGS");
+        if (TAMR_ES_EXTRA_CLI_ARGS != null && TAMR_ES_EXTRA_CLI_ARGS.length() > 1) {
+            final String delimiter = TAMR_ES_EXTRA_CLI_ARGS.substring(0, 1);
+            asList(TAMR_ES_EXTRA_CLI_ARGS.substring(1).split(delimiter)).forEach(args::add);
+        }
+
         return args;
     }
 
